@@ -1,0 +1,11 @@
+services:
+  job-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /workspace
+    volumes:
+      - ./:/workspace
+    environment:
+      - PYTHONPATH=/workspace/src
+    command: python -m job_agent.cli stats

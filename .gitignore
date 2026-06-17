@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# Runtime/cache
+.runtime/
+.cache/
+data_index/
+*.db
+*.sqlite
+*.sqlite3
+
+# Env/secrets
+.env
+.env.*
+!.env.example
+
+# Private real user data
+preferences.md
+job.md
+job_detail.md
+job_search_archive.md
+job_apply_log.md
+优化简历/
+generated_resumes/
+*.pdf
+*.docx
+*.doc
+
+# OS/IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

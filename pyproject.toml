@@ -1,0 +1,15 @@
+[project]
+name = "job-agent"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+  "typer>=0.12.0",
+  "rich>=13.7.0"
+]
+
+[project.scripts]
+job-agent = "job_agent.cli:app"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
