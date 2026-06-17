@@ -130,29 +130,6 @@ docker compose run --rm job-agent python -m job_agent.cli paused
 
 更多说明见 [docs/safety.md](./docs/safety.md)。
 
-## 隐私说明
-
-本仓库只应提交模板、示例和工具代码。真实求职数据、简历、投递日志、API Key、MCP 私有配置不应提交到 GitHub。
-
-`.gitignore` 已默认排除：
-
-- `preferences.md`
-- `job.md`
-- `job_detail.md`
-- `job_search_archive.md`
-- `job_apply_log.md`
-- `.env`
-- `优化简历/`
-- `*.pdf` / `*.docx`
-
-## 适合作品集展示的点
-
-- Agent 主提示词设计
-- 动态规则文件设计
-- MCP 工具调用边界设计
-- Human-in-the-loop 投递流程
-- Markdown 状态库与审计记录设计
-- 偏好学习和岗位捞回机制
 
 ## License
 
