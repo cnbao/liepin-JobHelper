@@ -112,8 +112,8 @@ def parse_job_detail_md(content: str) -> List[Dict]:
     i = 0
     while i < len(lines):
         line = lines[i]
-        # 匹配 "## X. 岗位名｜公司名" 格式
-        header_match = re.match(r'^##\s+\d+\.\s+(.+?)\|(.+)$', line.strip())
+        # 匹配 "## X. 岗位名｜公司名" 或 "### X. 岗位名｜公司名" 格式
+        header_match = re.match(r'^#{2,3}\s+\d+\.\s+(.+?)[|｜](.+)$', line.strip())
         if not header_match:
             i += 1
             continue
@@ -126,14 +126,9 @@ def parse_job_detail_md(content: str) -> List[Dict]:
         block_lines: List[str] = []
         while i < len(lines):
             stripped = lines[i].strip()
-            # 新评估块或新的大标题开始
-            if re.match(r'^##\s+\d+\.', stripped) or (stripped.startswith("## ") and not stripped.startswith(f"## {len(evaluations) + 1}.")):
-                # 检查是否是新的评估标题
-                if re.match(r'^##\s+\d+\.\s+.+\|.+', stripped):
-                    break
-                # 如果是其他 ## 标题但不是评估格式，也停止
-                if stripped.startswith("## ") and not re.match(r'^##\s+\d+\.\s+.+\|.+', stripped):
-                    break
+            # 只在遇到新的评估条目标题时中断
+            if re.match(r'^#{2,3}\s+\d+\.\s+.+[|｜].+', stripped):
+                break
             block_lines.append(lines[i])
             i += 1
 
@@ -271,8 +266,8 @@ def _parse_evaluation_block(title: str, company: str, block_lines: List[str]) ->
                     break
             record["dimensions"] = dimensions
 
-    # 统一 job_id
-    liepin_job_id = _extract_liepin_job_id(url) or job_id
+    # 使用 job.md 中的短 ID 作为 liepin_job_id，确保与 job.md 匹配
+    liepin_job_id = job_id
     record["job_id"] = job_id
     record["liepin_job_id"] = liepin_job_id
     record["url"] = url
@@ -311,7 +306,7 @@ def parse_apply_log_md(content: str) -> List[Dict]:
 
         # --- 段落式投递记录 ---
         # 匹配 "### N. 公司｜岗位" 或 "### 公司｜岗位"
-        section_match = re.match(r'^###\s+(?:\d+\.\s+)?(.+?)\|(.+)$', stripped)
+        section_match = re.match(r'^###\s+(?:\d+\.\s+)?(.+?)[|｜](.+)$', stripped)
         if section_match:
             company = section_match.group(1).strip()
             title = section_match.group(2).strip()
@@ -322,7 +317,7 @@ def parse_apply_log_md(content: str) -> List[Dict]:
             while i < len(lines):
                 s = lines[i].strip()
                 # 新投递块或新的大标题
-                if re.match(r'^###\s+(?:\d+\.\s+)?(.+?)\|.+', s):
+                if re.match(r'^###\s+(?:\d+\.\s+)?(.+?)[|｜].+', s):
                     break
                 if s.startswith("## ") and not re.match(r'^###\s+', s):
                     break

@@ -93,9 +93,25 @@ def import_evaluations(session, eval_data: List[Dict]):
         # 查找对应的 job 记录
         job = session.query(Job).filter_by(liepin_job_id=liepin_job_id).first()
         if not job:
-            logger.warning(f"评估记录 {liepin_job_id} 找不到对应岗位，跳过")
-            skipped += 1
-            continue
+            # 如果找不到岗位记录，从评估记录中创建岗位
+            logger.info(f"评估记录 {liepin_job_id} 找不到对应岗位，自动创建岗位")
+            score_val = None
+            try:
+                score_val = float(ev.get("score", 0)) if ev.get("score") else None
+            except (ValueError, TypeError):
+                pass
+
+            job = Job(
+                liepin_job_id=liepin_job_id,
+                title=ev.get("title", ""),
+                company=ev.get("company", ""),
+                score=score_val,
+                grade=ev.get("grade", ""),
+                choice_status=ev.get("choice", "待定") or "待定",
+                apply_status="未投递",
+            )
+            session.add(job)
+            session.flush()  # 获取 job.id
 
         score_val = None
         try:
